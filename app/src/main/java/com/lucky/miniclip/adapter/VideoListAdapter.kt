@@ -1,5 +1,6 @@
 package com.lucky.miniclip.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.lucky.miniclip.ProfileActivity
 import com.lucky.miniclip.R
 import com.lucky.miniclip.databinding.VideoItemRowBinding
 import com.lucky.miniclip.model.UserModel
@@ -36,6 +38,11 @@ class VideoListAdapter(
                             )
                             .into(binding.profileIcon)
 
+                        binding.userDetailLayout.setOnClickListener {
+                            val intent = Intent(binding.userDetailLayout.context, ProfileActivity::class.java)
+                            intent.putExtra("profile_user_id", id )
+                            binding.userDetailLayout.context.startActivity(intent)
+                        }
                     }
                 }
 

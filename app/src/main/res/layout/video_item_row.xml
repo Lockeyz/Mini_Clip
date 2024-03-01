@@ -25,12 +25,14 @@
         android:layout_centerInParent="true"
         android:id="@+id/progress_bar" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="16dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/user_detail_layout"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="16dp">
+
         <ImageView
             android:layout_width="48dp"
             android:layout_height="48dp"
