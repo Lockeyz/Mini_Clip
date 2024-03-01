@@ -8,24 +8,33 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import android.widget.GridLayout
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.lucky.miniclip.adapter.ProfileVideoAdapter
 import com.lucky.miniclip.databinding.ActivityProfileBinding
 import com.lucky.miniclip.model.UserModel
+import com.lucky.miniclip.model.VideoModel
+import java.util.Queue
 
 class ProfileActivity : AppCompatActivity() {
     lateinit var binding: ActivityProfileBinding
     lateinit var profileUserId : String
     lateinit var currentUserId : String
     lateinit var photoLauncher: ActivityResultLauncher<Intent>
+
+    lateinit var adapter: ProfileVideoAdapter
 
     lateinit var profileUserModel : UserModel
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +66,7 @@ class ProfileActivity : AppCompatActivity() {
             }
         }
         getProfileDataFromFirebase()
+        setupRecyclerView()
     }
 
     fun followUnfollowUser(){
@@ -175,5 +185,28 @@ class ProfileActivity : AppCompatActivity() {
                     binding.postCount.text  = it.size().toString()
                 }
         }
+    }
+
+    private fun setupRecyclerView() {
+        val options = FirestoreRecyclerOptions.Builder<VideoModel>()
+            .setQuery(
+                Firebase.firestore.collection("videos")
+                    .whereEqualTo("uploaderId", profileUserId)
+                    .orderBy("createdTime", Query.Direction.DESCENDING),
+                VideoModel::class.java
+            ).build()
+        adapter = ProfileVideoAdapter(options)
+        binding.recyclerView.layoutManager = GridLayoutManager(this, 3)
+        binding.recyclerView.adapter = adapter
+    }
+
+    override fun onStart() {
+        super.onStart()
+        adapter.startListening()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        adapter.stopListening()
     }
 }
